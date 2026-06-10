@@ -6,7 +6,7 @@ Bu proje sadece çalışan bir uygulama değil; aynı zamanda profesyonel bir ba
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+##  Kullanılan Teknolojiler
 
 | Teknoloji | Amaç |
 |-----------|------|
