@@ -1,5 +1,6 @@
 using LibraryManagement.Business.DTOs.Publisher;
 using LibraryManagement.Business.Services.Abstract;
+using LibraryManagement.Business.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
@@ -30,6 +31,12 @@ public class PublishersController : ControllerBase
             return NotFound($"Id={id} olan yayınevi bulunamadı.");
 
         return Ok(publisher);
+    }
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<PublisherListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
+    {
+    var result = await _publisherService.GetPagedAsync(paginationParams);
+    return Ok(result);
     }
 
     [HttpPost]

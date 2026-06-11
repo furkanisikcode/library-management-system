@@ -1,6 +1,8 @@
 using LibraryManagement.Business.DTOs.Book;
 using LibraryManagement.Business.Services.Abstract;
+using LibraryManagement.Business.Pagination;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace LibraryManagement.WebAPI.Controllers;
 
@@ -21,6 +23,12 @@ public class BooksController : ControllerBase
     {
         var books = await _bookService.GetAllAsync();
         return Ok(books);
+    }
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<BookListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
+    {   
+    var result = await _bookService.GetPagedAsync(paginationParams);
+    return Ok(result);
     }
 
     // GET: api/books/5

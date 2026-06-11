@@ -3,6 +3,7 @@ using LibraryManagement.Business.DTOs.Category;
 using LibraryManagement.Business.Services.Abstract;
 using LibraryManagement.DataAccess.Repositories.Abstract;
 using LibraryManagement.Entities.Concrete;
+using LibraryManagement.Business.Pagination;
 
 namespace LibraryManagement.Business.Services.Concrete;
 
@@ -58,5 +59,19 @@ public class CategoryService : ICategoryService
         _categoryRepository.Delete(category);
         await _categoryRepository.SaveChangesAsync();
         return true;
+    }
+    public async Task<PagedResult<CategoryListDto>> GetPagedAsync(PaginationParams paginationParams)
+    {
+    var (categories, totalCount) = await _categoryRepository.GetPagedWithBooksAsync(
+        paginationParams.PageNumber,
+        paginationParams.PageSize);
+
+    return new PagedResult<CategoryListDto>
+    {
+        Items = _mapper.Map<List<CategoryListDto>>(categories),
+        PageNumber = paginationParams.PageNumber,
+        PageSize = paginationParams.PageSize,
+        TotalCount = totalCount
+    };
     }
 }

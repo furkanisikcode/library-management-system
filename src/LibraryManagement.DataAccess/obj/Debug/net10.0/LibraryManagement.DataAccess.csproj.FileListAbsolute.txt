@@ -32,3 +32,4 @@ C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Deb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.pdb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.genruntimeconfig.cache
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\ref\LibraryManagement.DataAccess.dll
+C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.sourcelink.json

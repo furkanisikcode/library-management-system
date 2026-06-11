@@ -1,6 +1,8 @@
 using LibraryManagement.Business.DTOs.Author;
 using LibraryManagement.Business.Services.Abstract;
+using LibraryManagement.Business.Pagination;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace LibraryManagement.WebAPI.Controllers;
 
@@ -29,6 +31,12 @@ public class AuthorsController : ControllerBase
         if (author == null)
             return NotFound($"Id={id} olan yazar bulunamadı.");
         return Ok(author);
+    }
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<AuthorListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
+    {
+    var result = await _authorService.GetPagedAsync(paginationParams);
+    return Ok(result);
     }
 
     [HttpPost]

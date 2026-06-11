@@ -272,3 +272,4 @@ C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.WebAPI\bin\Debug\n
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.WebAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.WebAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.WebAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.WebAPI\obj\Debug\net10.0\LibraryManagement.WebAPI.sourcelink.json

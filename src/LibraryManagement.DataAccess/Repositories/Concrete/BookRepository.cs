@@ -29,4 +29,22 @@ public class BookRepository : Repository<Book>, IBookRepository
             .Where(b => !b.IsDeleted)
             .ToListAsync();
     }
+    public async Task<(List<Book> Items, int TotalCount)> GetPagedWithDetailsAsync(int pageNumber, int pageSize)
+    {
+    var query = _dbSet
+        .Include(b => b.Publisher)
+        .Include(b => b.Authors)
+        .Include(b => b.Categories)
+        .Where(b => !b.IsDeleted);
+
+    var totalCount = await query.CountAsync();
+
+    var items = await query
+        .OrderByDescending(b => b.CreatedDate)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
+    return (items, totalCount);
+    }
 }

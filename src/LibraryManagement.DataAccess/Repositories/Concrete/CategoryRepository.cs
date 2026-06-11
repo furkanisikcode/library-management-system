@@ -25,4 +25,20 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
             .Where(c => !c.IsDeleted)
             .ToListAsync();
     }
+    public async Task<(List<Category> Items, int TotalCount)> GetPagedWithBooksAsync(int pageNumber, int pageSize)
+    {
+    var query = _dbSet
+        .Include(c => c.Books)
+        .Where(c => !c.IsDeleted);
+
+    var totalCount = await query.CountAsync();
+
+    var items = await query
+        .OrderByDescending(c => c.CreatedDate)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
+    return (items, totalCount);
+    }
 }

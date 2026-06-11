@@ -1,5 +1,6 @@
 using LibraryManagement.Business.DTOs.Category;
 using LibraryManagement.Business.Services.Abstract;
+using LibraryManagement.Business.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
@@ -29,6 +30,12 @@ public class CategoriesController : ControllerBase
         if (category == null)
             return NotFound($"Id={id} olan kategori bulunamadı.");
         return Ok(category);
+    }
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<CategoryListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
+    {
+    var result = await _categoryService.GetPagedAsync(paginationParams);
+    return Ok(result);
     }
 
     [HttpPost]

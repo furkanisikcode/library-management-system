@@ -1,8 +1,10 @@
 using AutoMapper;
 using LibraryManagement.Business.DTOs.Book;
+using LibraryManagement.Business.Exceptions;       
 using LibraryManagement.Business.Services.Abstract;
 using LibraryManagement.DataAccess.Repositories.Abstract;
 using LibraryManagement.Entities.Concrete;
+using LibraryManagement.Business.Pagination;
 
 namespace LibraryManagement.Business.Services.Concrete;
 
@@ -37,6 +39,22 @@ public class BookService : IBookService
         var books = await _bookRepository.GetAllWithDetailsAsync();
         return _mapper.Map<List<BookListDto>>(books);
     }
+    public async Task<PagedResult<BookListDto>> GetPagedAsync(PaginationParams paginationParams)
+    {
+    var (books, totalCount) = await _bookRepository.GetPagedWithDetailsAsync(
+        paginationParams.PageNumber,
+        paginationParams.PageSize);
+
+    var bookDtos = _mapper.Map<List<BookListDto>>(books);
+
+    return new PagedResult<BookListDto>
+    {
+        Items = bookDtos,
+        PageNumber = paginationParams.PageNumber,
+        PageSize = paginationParams.PageSize,
+        TotalCount = totalCount
+    };
+    }
 
     public async Task<BookDetailDto> CreateAsync(BookCreateDto createDto)
     {
@@ -61,7 +79,7 @@ public class BookService : IBookService
     {
         var book = await _bookRepository.GetByIdWithDetailsAsync(updateDto.Id);
         if (book == null)
-            throw new Exception($"Id={updateDto.Id} olan kitap bulunamadı.");
+            throw new NotFoundException($"Id={updateDto.Id} olan kitap bulunamadı.");
 
         _mapper.Map(updateDto, book);
 

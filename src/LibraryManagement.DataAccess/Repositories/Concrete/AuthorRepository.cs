@@ -25,4 +25,20 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
             .Where(a => !a.IsDeleted)
             .ToListAsync();
     }
+    public async Task<(List<Author> Items, int TotalCount)> GetPagedWithBooksAsync(int pageNumber, int pageSize)
+    {
+    var query = _dbSet
+        .Include(a => a.Books)
+        .Where(a => !a.IsDeleted);
+
+    var totalCount = await query.CountAsync();
+
+    var items = await query
+        .OrderByDescending(a => a.CreatedDate)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
+    return (items, totalCount);
+    }
 }

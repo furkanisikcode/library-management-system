@@ -20,3 +20,4 @@ C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Entities\obj\Debug
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Entities\obj\Debug\net10.0\refint\LibraryManagement.Entities.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Entities\obj\Debug\net10.0\LibraryManagement.Entities.pdb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Entities\obj\Debug\net10.0\ref\LibraryManagement.Entities.dll
+C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Entities\obj\Debug\net10.0\LibraryManagement.Entities.sourcelink.json

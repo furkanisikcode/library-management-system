@@ -3,6 +3,7 @@ using LibraryManagement.Business.DTOs.Publisher;
 using LibraryManagement.Business.Services.Abstract;
 using LibraryManagement.DataAccess.Repositories.Abstract;
 using LibraryManagement.Entities.Concrete;
+using LibraryManagement.Business.Pagination;
 
 namespace LibraryManagement.Business.Services.Concrete;
 
@@ -61,5 +62,19 @@ public class PublisherService : IPublisherService
         _publisherRepository.Delete(publisher);
         await _publisherRepository.SaveChangesAsync();
         return true;
+    }
+    public async Task<PagedResult<PublisherListDto>> GetPagedAsync(PaginationParams paginationParams)
+    {
+    var (publishers, totalCount) = await _publisherRepository.GetPagedWithBooksAsync(
+        paginationParams.PageNumber,
+        paginationParams.PageSize);
+
+    return new PagedResult<PublisherListDto>
+    {
+        Items = _mapper.Map<List<PublisherListDto>>(publishers),
+        PageNumber = paginationParams.PageNumber,
+        PageSize = paginationParams.PageSize,
+        TotalCount = totalCount
+    };
     }
 }
