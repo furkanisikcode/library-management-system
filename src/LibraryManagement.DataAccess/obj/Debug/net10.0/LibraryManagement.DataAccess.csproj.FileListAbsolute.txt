@@ -26,10 +26,10 @@ C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Deb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.AssemblyInfoInputs.cache
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.AssemblyInfo.cs
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.sourcelink.json
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryM.AFC7FA6E.Up2Date
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\refint\LibraryManagement.DataAccess.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.pdb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.genruntimeconfig.cache
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\ref\LibraryManagement.DataAccess.dll
-C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.DataAccess\obj\Debug\net10.0\LibraryManagement.DataAccess.sourcelink.json

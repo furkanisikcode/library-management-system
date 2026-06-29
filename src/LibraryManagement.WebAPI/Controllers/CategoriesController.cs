@@ -1,12 +1,14 @@
 using LibraryManagement.Business.DTOs.Category;
 using LibraryManagement.Business.Services.Abstract;
 using LibraryManagement.Business.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
@@ -31,14 +33,16 @@ public class CategoriesController : ControllerBase
             return NotFound($"Id={id} olan kategori bulunamadı.");
         return Ok(category);
     }
+
     [HttpGet("paged")]
     public async Task<ActionResult<PagedResult<CategoryListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
     {
-    var result = await _categoryService.GetPagedAsync(paginationParams);
-    return Ok(result);
+        var result = await _categoryService.GetPagedAsync(paginationParams);
+        return Ok(result);
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Librarian")]
     public async Task<ActionResult<CategoryDetailDto>> Create([FromBody] CategoryCreateDto createDto)
     {
         var category = await _categoryService.CreateAsync(createDto);
@@ -46,6 +50,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Librarian")]
     public async Task<ActionResult<CategoryDetailDto>> Update(int id, [FromBody] CategoryUpdateDto updateDto)
     {
         if (id != updateDto.Id)
@@ -56,6 +61,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _categoryService.DeleteAsync(id);

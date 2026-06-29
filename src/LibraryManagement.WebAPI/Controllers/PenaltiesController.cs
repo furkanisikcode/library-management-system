@@ -1,11 +1,13 @@
 using LibraryManagement.Business.DTOs.Penalty;
 using LibraryManagement.Business.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PenaltiesController : ControllerBase
 {
     private readonly IPenaltyService _penaltyService;
@@ -39,6 +41,7 @@ public class PenaltiesController : ControllerBase
     }
 
     [HttpPost("{id}/pay")]
+    [Authorize(Roles = "Admin,Librarian")]
     public async Task<ActionResult<PenaltyDetailDto>> Pay(int id)
     {
         var penalty = await _penaltyService.PayPenaltyAsync(id);

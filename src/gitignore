@@ -52,3 +52,7 @@ secrets.json
 *.log
 *.tmp
 *.bak
+
+# Logs
+logs/
+*.log

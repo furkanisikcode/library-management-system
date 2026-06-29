@@ -246,6 +246,10 @@ namespace LibraryManagement.DataAccess.Migrations
                     b.Property<DateTime>("MembershipDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 

@@ -27,9 +27,9 @@ C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.AssemblyInfoInputs.cache
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.AssemblyInfo.cs
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.sourcelink.json
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryM.A37D8BEB.Up2Date
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\refint\LibraryManagement.Business.dll
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.pdb
 C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\ref\LibraryManagement.Business.dll
-C:\Users\User\Desktop\LibraryManagement\src\LibraryManagement.Business\obj\Debug\net10.0\LibraryManagement.Business.sourcelink.json

@@ -5,8 +5,9 @@
 ![Status](https://img.shields.io/badge/status-complete-success)
 ![.NET](https://img.shields.io/badge/.NET-10-blueviolet)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
+![JWT](https://img.shields.io/badge/Auth-JWT-yellow)
 
-Bu proje sadece çalışan bir uygulama değil; aynı zamanda profesyonel bir backend projesinin nasıl yapılandırılması gerektiğine dair bir referanstır. Her katmanın tek bir sorumluluğu vardır, bağımlılıklar tek yönlüdür ve her detay test edilebilir, genişletilebilir ve sürdürülebilir olacak şekilde tasarlanmıştır.
+Bu proje sadece çalışan bir uygulama değil; aynı zamanda profesyonel bir backend projesinin nasıl yapılandırılması gerektiğine dair bir referanstır. Her katmanın tek bir sorumluluğu vardır, bağımlılıklar tek yönlüdür ve her detay test edilebilir, genişletilebilir, sürdürülebilir ve güvenli olacak şekilde tasarlanmıştır.
 
 ---
 
@@ -18,6 +19,9 @@ Bu proje sadece çalışan bir uygulama değil; aynı zamanda profesyonel bir ba
 - **PostgreSQL** (Npgsql provider)
 - **AutoMapper** (Entity ↔ DTO dönüşümü)
 - **FluentValidation** (Model doğrulama)
+- **JWT Bearer Authentication** (Microsoft.AspNetCore.Authentication.JwtBearer)
+- **BCrypt.Net-Next** (Parola hashleme)
+- **Serilog** (Yapılandırılmış loglama, dosyaya yazma)
 - **Swagger / OpenAPI** (API dokümantasyonu)
 
 ---
@@ -25,14 +29,15 @@ Bu proje sadece çalışan bir uygulama değil; aynı zamanda profesyonel bir ba
 ## 🏗️ Mimari
 
 4 katmanlı solution yapısı:
-
-\`\`\`
 LibraryManagement/
+
 ├── LibraryManagement.Entities      → Domain modelleri
+
 ├── LibraryManagement.DataAccess    → DbContext, Repository, Migrations
-├── LibraryManagement.Business      → Service, DTO, Validation, Mapping, Settings, Exceptions
+
+├── LibraryManagement.Business      → Service, DTO, Validation, Mapping, Settings, Exceptions, Auth
+
 └── LibraryManagement.WebAPI        → Controller, Middleware, REST endpoints
-\`\`\`
 
 **Bağımlılık yönü:** `WebAPI → Business → DataAccess → Entities`
 
@@ -49,10 +54,14 @@ LibraryManagement/
 - ✅ Global Exception Middleware (RFC 7807 Problem Details)
 - ✅ Atomik transaction yönetimi
 - ✅ Soft delete (`IsDeleted` bayrağı)
-- ✅ UTC DateTime (zaman dilimine bağımsız)
+- ✅ UTC DateTime
 - ✅ Dependency Injection (her katmanda)
 - ✅ Async/Await (tüm DB işlemleri)
 - ✅ Pagination (generic `PagedResult<T>`)
+- ✅ **JWT Authentication & Authorization** 🔐
+- ✅ **Role-Based Access Control** (Admin / Librarian / Member)
+- ✅ **BCrypt parola hashleme**
+- ✅ **Serilog Logging** (dosyaya yazma, günlük rotasyon)
 - ✅ RESTful API + doğru HTTP status code'ları
 - ✅ Swagger UI
 
@@ -83,9 +92,57 @@ Tüm entity'ler `BaseEntity`'den miras alır (Id, CreatedDate, UpdatedDate, IsDe
 - Pasif üye ödünç alamaz
 - Ödenmemiş cezası olan üye yeni kitap alamaz
 - Email unique kontrolü
-- Çift ödeme engeli (aynı ceza iki kez ödenemez)
+- Çift ödeme engeli
 - İade sırasında gecikme varsa **otomatik ceza** oluşturulur
 - Stok otomatik yönetimi (ödünç→azalır, iade→artar, atomik)
+
+---
+
+## 🔐 Authentication & Authorization
+
+JWT Bearer token tabanlı kimlik doğrulama:
+
+### Endpoints
+
+- `POST /api/Auth/register` — Yeni hesap aç (her zaman Member rolü)
+- `POST /api/Auth/login` — Giriş yap, token al
+
+### Role-Based Access
+
+| Rol | Yetki |
+|-----|-------|
+| **Admin** | Tam yetki: tüm CRUD, üye yönetimi, silme |
+| **Librarian** | Kitap/yazar/kategori/yayınevi ekleme/güncelleme, ödünç verme, iade alma, ceza tahsil |
+| **Member** | Sadece okuma (kitap arama, kendi ödünçlerini görme) |
+
+### Endpoint Korumaları
+
+- `[AllowAnonymous]` — Auth endpoint'leri
+- `[Authorize]` — Giriş yapan herkes (GET endpoint'leri)
+- `[Authorize(Roles = "Admin,Librarian")]` — Yönetim işlemleri
+- `[Authorize(Roles = "Admin")]` — Hassas işlemler (silme, üye yönetimi)
+
+### Güvenlik Özellikleri
+
+- BCrypt ile parola hashleme (salt + cost factor)
+- Token expiry kontrolü (60 dakika)
+- Issuer/Audience doğrulaması
+- HMAC-SHA256 imza algoritması
+
+---
+
+## 📝 Logging (Serilog)
+
+- **Konsol + Dosya** loglama
+- **Günlük dosya rotasyonu** (`logs/log-YYYYMMDD.txt`)
+- **30 günlük geriye dönük saklama**
+- **HTTP request loglaması** (URL, method, status, süre)
+- **Yapılandırılmış format** (Timestamp, Level, Message, Exception)
+
+Örnek log satırı:
+2026-06-29 18:55:24.381 +03:00 [INF] HTTP GET /api/Books responded 200 in 25.4 ms
+
+2026-06-29 18:58:42.123 +03:00 [WRN] İş kuralı hatası: 'Kar' kitabı şu anda stokta yok.
 
 ---
 
@@ -98,7 +155,7 @@ Tüm entity'ler `BaseEntity`'den miras alır (Id, CreatedDate, UpdatedDate, IsDe
 
 ### Adımlar
 
-\`\`\`bash
+```bash
 git clone https://github.com/furkanisikcode/library-management-system.git
 cd library-management-system
 
@@ -109,7 +166,7 @@ dotnet restore
 dotnet ef database update --project src/LibraryManagement.DataAccess --startup-project src/LibraryManagement.WebAPI
 
 dotnet run --project src/LibraryManagement.WebAPI
-\`\`\`
+```
 
 Swagger UI: `http://localhost:5245/swagger`
 
@@ -119,7 +176,7 @@ Swagger UI: `http://localhost:5245/swagger`
 
 `src/LibraryManagement.WebAPI/appsettings.json`:
 
-\`\`\`json
+```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=LibraryDB;Username=postgres;Password=YOUR_PASSWORD"
@@ -128,29 +185,42 @@ Swagger UI: `http://localhost:5245/swagger`
     "MaxActiveLoanPerMember": 5,
     "LoanDurationInDays": 14,
     "DailyPenaltyAmount": 5.00
+  },
+  "JwtSettings": {
+    "Secret": "BuCokGizliBirAnahtarOlmaliVeEnAz32KarakterUzunlugundaTutulmali_2026",
+    "Issuer": "LibraryManagementAPI",
+    "Audience": "LibraryManagementClient",
+    "ExpirationInMinutes": 60
   }
 }
-\`\`\`
+```
 
 ---
 
-## 📡 API Endpoint'leri (35+)
+## 📡 API Endpoint'leri (40+)
 
-**Books, Authors, Categories, Publishers, Members:**
+### Auth
+- `POST /api/Auth/register` — Yeni hesap
+- `POST /api/Auth/login` — Giriş
+
+### Books, Authors, Categories, Publishers (Standart CRUD + Pagination)
 - `GET    /api/{resource}` — Tümünü listele
 - `GET    /api/{resource}/paged?pageNumber=1&pageSize=20` — Sayfalı liste
 - `GET    /api/{resource}/{id}` — Detay
-- `POST   /api/{resource}` — Yeni kayıt
-- `PUT    /api/{resource}/{id}` — Güncelle
-- `DELETE /api/{resource}/{id}` — Sil (soft)
+- `POST   /api/{resource}` — Yeni kayıt (Admin/Librarian)
+- `PUT    /api/{resource}/{id}` — Güncelle (Admin/Librarian)
+- `DELETE /api/{resource}/{id}` — Sil (Admin)
 
-**Loans (özel iş mantığı):**
-- `POST   /api/Loans/borrow` — Ödünç ver
-- `POST   /api/Loans/return` — İade et (otomatik ceza)
+### Members (Admin Only)
+- Yukarıdakiyle aynı + email unique kontrolü
 
-**Penalties:**
+### Loans (özel iş mantığı)
+- `POST   /api/Loans/borrow` — Ödünç ver (Admin/Librarian)
+- `POST   /api/Loans/return` — İade et — otomatik ceza (Admin/Librarian)
+
+### Penalties
 - `GET    /api/Penalties/member/{memberId}` — Üye ceza özeti
-- `POST   /api/Penalties/{id}/pay` — Cezayı öde
+- `POST   /api/Penalties/{id}/pay` — Cezayı öde (Admin/Librarian)
 
 ---
 
@@ -158,7 +228,7 @@ Swagger UI: `http://localhost:5245/swagger`
 
 RFC 7807 Problem Details formatında hata cevapları:
 
-\`\`\`json
+```json
 {
   "type": "https://httpstatuses.com/404",
   "title": "Bulunamadı",
@@ -166,49 +236,30 @@ RFC 7807 Problem Details formatında hata cevapları:
   "detail": "Id=999 olan kitap bulunamadı.",
   "traceId": "0HN07845G51HI:00000003"
 }
-\`\`\`
+```
 
 | Hata | HTTP |
 |------|------|
 | NotFoundException | 404 |
 | BusinessRuleException | 400 |
 | ConflictException | 409 |
+| Token yok/geçersiz | 401 Unauthorized |
+| Yetkin yok | 403 Forbidden |
 | FluentValidation | 400 |
-
----
-
-## 📄 Pagination
-
-\`\`\`
-GET /api/Books/paged?pageNumber=2&pageSize=20
-\`\`\`
-
-\`\`\`json
-{
-  "items": [...],
-  "pageNumber": 2,
-  "pageSize": 20,
-  "totalCount": 153,
-  "totalPages": 8,
-  "hasPreviousPage": true,
-  "hasNextPage": true
-}
-\`\`\`
-
-`pageSize` maksimum **100** ile sınırlandırılmıştır (güvenlik).
 
 ---
 
 ## 🚧 Durum
 
 - ✅ Tüm temel CRUD (5 entity)
-- ✅ Loan sistemi
-- ✅ Penalty sistemi
+- ✅ Loan sistemi (6 iş kuralı)
+- ✅ Penalty sistemi (otomatik ceza, ödeme, üye özeti)
 - ✅ Global Exception Handling
 - ✅ Pagination
-- ⏳ JWT Authentication (opsiyonel)
-- ⏳ Logging — Serilog (opsiyonel)
-- ⏳ Unit testler (opsiyonel)
+- ✅ **JWT Authentication & Role-Based Authorization**
+- ✅ **Serilog Logging**
+- ⏳ Unit ve Integration testler (gelecek geliştirme)
+- ⏳ Refresh Token (gelecek geliştirme)
 
 ---
 

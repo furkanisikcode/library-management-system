@@ -1,12 +1,14 @@
 using LibraryManagement.Business.DTOs.Member;
 using LibraryManagement.Business.Services.Abstract;
-using Microsoft.AspNetCore.Mvc;
 using LibraryManagement.Business.Pagination;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class MembersController : ControllerBase
 {
     private readonly IMemberService _memberService;
@@ -31,11 +33,12 @@ public class MembersController : ControllerBase
             return NotFound($"Id={id} olan üye bulunamadı.");
         return Ok(member);
     }
+
     [HttpGet("paged")]
     public async Task<ActionResult<PagedResult<MemberListDto>>> GetPaged([FromQuery] PaginationParams paginationParams)
     {
-    var result = await _memberService.GetPagedAsync(paginationParams);
-    return Ok(result);
+        var result = await _memberService.GetPagedAsync(paginationParams);
+        return Ok(result);
     }
 
     [HttpPost]

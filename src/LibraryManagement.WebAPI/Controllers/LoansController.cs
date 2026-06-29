@@ -1,11 +1,13 @@
 using LibraryManagement.Business.DTOs.Loan;
 using LibraryManagement.Business.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class LoansController : ControllerBase
 {
     private readonly ILoanService _loanService;
@@ -32,6 +34,7 @@ public class LoansController : ControllerBase
     }
 
     [HttpPost("borrow")]
+    [Authorize(Roles = "Admin,Librarian")]
     public async Task<ActionResult<LoanDetailDto>> Borrow([FromBody] LoanCreateDto createDto)
     {
         var loan = await _loanService.BorrowBookAsync(createDto);
@@ -39,6 +42,7 @@ public class LoansController : ControllerBase
     }
 
     [HttpPost("return")]
+    [Authorize(Roles = "Admin,Librarian")]
     public async Task<ActionResult<LoanDetailDto>> Return([FromBody] LoanReturnDto returnDto)
     {
         var loan = await _loanService.ReturnBookAsync(returnDto);
