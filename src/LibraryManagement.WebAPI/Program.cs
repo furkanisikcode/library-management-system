@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Serilog;
+using LibraryManagement.Common.Email;
+using LibraryManagement.Common.Sms;
 
 // Bootstrap logger (uygulama başlayana kadar minimal log)
 Log.Logger = new LoggerConfiguration()
@@ -22,8 +24,12 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 // Serilog'u appsettings.json'daki config ile yapılandır
-builder.Host.UseSerilog((context, services, configuration) => 
-    configuration.ReadFrom.Configuration(context.Configuration));
+// Serilog'u appsettings.json'daki config ile yapılandır (testte atla)
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Host.UseSerilog((context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration));
+}
 
 builder.Services.AddControllers();
 
@@ -65,6 +71,9 @@ builder.Services.AddScoped<ILoanService, LoanService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+// Common - Email
+builder.Services.AddScoped<IEmailService, ConsoleEmailService>();
+builder.Services.AddScoped<ISmsService, ConsoleSmsService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
@@ -97,7 +106,10 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // HTTP request loglaması
-app.UseSerilogRequestLogging();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseSerilogRequestLogging();
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -114,16 +126,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-try
+if (app.Environment.IsEnvironment("Testing"))
 {
-    Log.Information("Library Management API başlatılıyor...");
+    // Test host'unda try/finally + CloseAndFlush çalıştırma (dispose sorununu önler)
     app.Run();
 }
-catch (Exception ex)
+else
 {
-    Log.Fatal(ex, "Uygulama başlatılırken hata oluştu.");
+    try
+    {
+        Log.Information("Library Management API başlatılıyor...");
+        app.Run();
+    }
+    catch (Exception ex)
+    {
+        Log.Fatal(ex, "Uygulama başlatılırken hata oluştu.");
+    }
+    finally
+    {
+        Log.CloseAndFlush();
+    }
 }
-finally
-{
-    Log.CloseAndFlush();
-}
+
+public partial class Program { }

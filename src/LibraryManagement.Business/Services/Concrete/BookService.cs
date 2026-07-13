@@ -5,12 +5,15 @@ using LibraryManagement.Business.Services.Abstract;
 using LibraryManagement.DataAccess.Repositories.Abstract;
 using LibraryManagement.Entities.Concrete;
 using LibraryManagement.Business.Pagination;
+using LibraryManagement.DataAccess.Repositories.Concrete;
 
 namespace LibraryManagement.Business.Services.Concrete;
 
 public class BookService : IBookService
 {
-    private readonly IBookRepository _bookRepository;
+    private readonly IBookRepository _bookRepository; 
+    //private readonly IRepository<Book> _bookRepository2;
+
     private readonly IRepository<Author> _authorRepository;
     private readonly IRepository<Category> _categoryRepository;
     private readonly IMapper _mapper;
@@ -29,6 +32,9 @@ public class BookService : IBookService
 
     public async Task<BookDetailDto?> GetByIdAsync(int id)
     {
+        //var a = new BookRepository();
+        //var book = await a.GetByIdWithDetailsAsync(id);
+
         var book = await _bookRepository.GetByIdWithDetailsAsync(id);
         if (book == null) return null;
         return _mapper.Map<BookDetailDto>(book);

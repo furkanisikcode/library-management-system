@@ -6,6 +6,8 @@ using LibraryManagement.DataAccess.Repositories.Abstract;
 using LibraryManagement.Entities.Concrete;
 using LibraryManagement.Entities.Enums;
 using Microsoft.Extensions.Options;
+using LibraryManagement.Common.Email;
+using LibraryManagement.Common.Sms;
 
 namespace LibraryManagement.Business.Services.Concrete;
 
@@ -14,15 +16,21 @@ public class AuthService : IAuthService
     private readonly IMemberRepository _memberRepository;
     private readonly ITokenService _tokenService;
     private readonly JwtSettings _jwtSettings;
+    private readonly IEmailService _emailService;
+    private readonly ISmsService _smsService;
 
     public AuthService(
         IMemberRepository memberRepository,
         ITokenService tokenService,
-        IOptions<JwtSettings> jwtSettings)
+        IOptions<JwtSettings> jwtSettings,
+        IEmailService emailService,
+        ISmsService smsService)
     {
         _memberRepository = memberRepository;
         _tokenService = tokenService;
         _jwtSettings = jwtSettings.Value;
+        _emailService = emailService;
+        _smsService = smsService;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -52,7 +60,21 @@ public class AuthService : IAuthService
         await _memberRepository.AddAsync(member);
         await _memberRepository.SaveChangesAsync();
 
-        // 4. Token üret ve cevabı döndür
+        // 4. Hoş geldin e-postası gönder (simülasyon → log)
+        await _emailService.SendAsync(
+            member.Email,
+            "Kütüphaneye Hoş Geldiniz!",
+            $"Merhaba {member.FirstName}, üyeliğiniz başarıyla oluşturuldu.");
+
+        // 5. Hoş geldin SMS'i gönder (simülasyon → log)
+        if (!string.IsNullOrWhiteSpace(member.PhoneNumber))
+        {
+            await _smsService.SendAsync(
+                member.PhoneNumber,
+                $"Merhaba {member.FirstName}, kütüphane üyeliğiniz aktif edildi.");
+        }
+
+        // 6. Token üret ve cevabı döndür
         return BuildAuthResponse(member);
     }
 

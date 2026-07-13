@@ -3,7 +3,7 @@ using LibraryManagement.Business.DTOs.Author;
 
 namespace LibraryManagement.Business.Validators;
 
-public class AuthorCreateDtoValidator : AbstractValidator<AuthorCreateDto>
+public class AuthorCreateDtoValidator : AbstractValidator<AuthorCreateDto> // kullanılmamıs
 {
     public AuthorCreateDtoValidator()
     {

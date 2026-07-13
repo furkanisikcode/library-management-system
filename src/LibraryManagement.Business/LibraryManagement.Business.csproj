@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LibraryManagement.DataAccess\LibraryManagement.DataAccess.csproj" />
     <ProjectReference Include="..\LibraryManagement.Entities\LibraryManagement.Entities.csproj" />
+    <ProjectReference Include="..\LibraryManagement.Common\LibraryManagement.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
